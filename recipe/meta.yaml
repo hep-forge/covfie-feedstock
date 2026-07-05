@@ -36,7 +36,7 @@ requirements:
 test:
   commands:
     - test -f "${PREFIX}/include/covfie/core/field.hpp"
-    - test -f "${PREFIX}/lib/cmake/covfie/covfieConfig.cmake"
+    - test -f "${PREFIX}/share/covfie/cmake/covfieConfig.cmake"
 
 about:
   home: "https://github.com/acts-project/covfie"
