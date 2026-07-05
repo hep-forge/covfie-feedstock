@@ -1,5 +1,5 @@
 {% set versions = {
-    "0.0.0": "REPLACE_WITH_SHA256"
+    "0.15.6": "ed22408f981692398408ffe04ff8e6230c022288552a83dbc2ad34b96003a84e"
 } %}
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
@@ -13,7 +13,7 @@ package:
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
-  url: "https://github.com/acts-project/covfie/archive/refs/tags/{{ version }}.tar.gz"   # TODO: confirm upstream's actual tag/tarball naming
+  url: "https://github.com/acts-project/covfie/archive/refs/tags/v{{ version }}.tar.gz"
   {% if versions.get(version, None) %}
   sha256: {{ versions.get(version) }}
   {% endif %}
@@ -25,24 +25,29 @@ build:
 
 requirements:
   build:
-    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
     - cmake
     - make
-  host:
-    # TODO: library dependencies
-  run:
-    # TODO: runtime dependencies
+  # header-only (all covfie_core/covfie_cpu targets are CMake INTERFACE
+  # libraries) -- no host/run deps, just a C++20-capable compiler at
+  # consumer build time.
 
 test:
   commands:
-    - echo "TODO: a real smoke test"
+    - test -f "${PREFIX}/include/covfie/core/field.hpp"
+    - test -f "${PREFIX}/lib/cmake/covfie/covfieConfig.cmake"
 
 about:
   home: "https://github.com/acts-project/covfie"
   license: "MPL-2.0"
   summary: "Library for storing interpolatable vector fields on co-processors"
+  description: |
+    covfie (CO-Processor Vector FIElds) is a library, developed as part of
+    the ACTS project, for storing and accessing interpolatable vector
+    fields (e.g. magnetic field maps) on both CPUs and GPU-family
+    co-processors (CUDA, SYCL, HIP). This build enables only the CPU
+    platform target. It is a dependency of ACTS.
 
 extra:
   recipe-maintainers:
